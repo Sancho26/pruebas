@@ -27,12 +27,12 @@ public class Articulos extends javax.swing.JFrame {
         Connection connection = DriverManager.getConnection(url, user,pass);
        
         Statement s = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        String query = "select * from articulos";
+        String query = "select A.*, F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
         r = s.executeQuery(query);
         r.first();
         codigo.setText(r.getString("COD_ARTICULO"));
         articulo.setText(r.getString("ARTICULO"));
-        fabricante.setText(r.getString("FABRICANTE"));
+        fabricante.setText(r.getString("NOMBRE"));
         peso.setText(r.getString("PESO"));
         categoria.setText(r.getString("CATEGORIA"));
         preciov.setText(r.getString("PRECIO_VENTA"));
@@ -102,6 +102,11 @@ public class Articulos extends javax.swing.JFrame {
         jLabel4.setFocusable(false);
 
         fabricante.setNextFocusableComponent(peso);
+        fabricante.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fabricanteActionPerformed(evt);
+            }
+        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("Peso");
@@ -334,7 +339,7 @@ public class Articulos extends javax.swing.JFrame {
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -350,7 +355,7 @@ public class Articulos extends javax.swing.JFrame {
             r.last();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -366,7 +371,7 @@ public class Articulos extends javax.swing.JFrame {
             if(r.previous()){
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -383,7 +388,7 @@ public class Articulos extends javax.swing.JFrame {
             if(r.next()){
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -434,7 +439,7 @@ public class Articulos extends javax.swing.JFrame {
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -499,12 +504,12 @@ public class Articulos extends javax.swing.JFrame {
             modificar.setEnabled(true);
             volver.setEnabled(true);
             borrar.setEnabled(true);
-            String query2 = "select * from articulos";
+            String query2 = "select A.* F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
             r = s.executeQuery(query2);
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -531,12 +536,12 @@ public class Articulos extends javax.swing.JFrame {
             Statement s = connection.createStatement();
             String query = "DELETE FROM articulos WHERE COD_ARTICULO='"+ vCodigo + "'";
             int resultado = s.executeUpdate(query);
-            String query2 = "select * from articulos";
+            String query2 = "select A.* F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
             r = s.executeQuery(query2);
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("FABRICANTE"));
+            fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -546,6 +551,10 @@ public class Articulos extends javax.swing.JFrame {
             Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_borrarActionPerformed
+
+    private void fabricanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fabricanteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_fabricanteActionPerformed
 
     /**
      * @param args the command line arguments
