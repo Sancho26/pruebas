@@ -112,12 +112,27 @@ public class Pedidos extends javax.swing.JFrame {
         });
 
         modificar.setText("Modificar");
+        modificar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                modificarActionPerformed(evt);
+            }
+        });
 
         nuevo.setText("Nuevo");
 
         borrar.setText("Borrar");
+        borrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                borrarActionPerformed(evt);
+            }
+        });
 
         volver.setText("Volver");
+        volver.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                volverActionPerformed(evt);
+            }
+        });
 
         aceptar.setText("Aceptar");
 
@@ -207,7 +222,6 @@ public class Pedidos extends javax.swing.JFrame {
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
-        jLabel1.getAccessibleContext().setAccessibleName("PEDIDOS");
         jLabel1.getAccessibleContext().setAccessibleDescription("");
 
         pack();
@@ -229,7 +243,7 @@ public class Pedidos extends javax.swing.JFrame {
         try {
             r.first();
             num_pedido.setText(r.getString("NUM_PEDIDO"));
-            cliente.setText(r.getString("CLIENTE"));
+            cliente.setText(r.getString("NOMBRE"));
             fecha.setText(r.getString("FECHA"));
         } catch (SQLException ex) {
             Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
@@ -258,6 +272,33 @@ public class Pedidos extends javax.swing.JFrame {
             Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_siguienteActionPerformed
+
+    private void borrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_borrarActionPerformed
+
+    private void volverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_volverActionPerformed
+        dispose();
+    }//GEN-LAST:event_volverActionPerformed
+
+    private void modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarActionPerformed
+        try {
+            String vNum_pedido, vCliente, vFecha;
+            vNum_pedido = num_pedido.getText();
+            vCliente = cliente.getText();
+            vFecha = fecha.getText();
+            String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
+            String user = "root";
+            String pass = "";
+            Connection connection = DriverManager.getConnection(url, user,pass);
+            Statement s = connection.createStatement();
+            String query = "update pedidos set NUM_PEDIDO='" + vNum_pedido + "', CLIENTE='" + vCliente + "', FECHA='" + vFecha +"'";
+            int resultado = s.executeUpdate(query);
+            r.refreshRow();
+        } catch (SQLException ex) {
+            Logger.getLogger(Pedidos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_modificarActionPerformed
 
     /**
      * @param args the command line arguments

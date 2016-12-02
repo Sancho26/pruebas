@@ -5,18 +5,20 @@
  */
 package ejercicio_basedatos;
 
-    import java.sql.Connection;
-    import java.sql.DriverManager;
-    import java.sql.ResultSet;
-    import java.sql.SQLException;
-    import java.sql.Statement;
-    import java.util.logging.Level;
-    import java.util.logging.Logger;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.DefaultComboBoxModel;
 
 public class Articulos extends javax.swing.JFrame {
 
     static public ResultSet r;
-    
+    static public Connection connection;
+
     public Articulos() throws SQLException {
         initComponents();
         aceptar.setVisible(false);
@@ -24,20 +26,31 @@ public class Articulos extends javax.swing.JFrame {
         String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
         String user = "root";
         String pass = "";
-        Connection connection = DriverManager.getConnection(url, user,pass);
-       
+        connection = DriverManager.getConnection(url, user, pass);
+
         Statement s = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
-        String query = "select A.*, F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
+        String query = "select * from articulos";
         r = s.executeQuery(query);
         r.first();
         codigo.setText(r.getString("COD_ARTICULO"));
-        articulo.setText(r.getString("ARTICULO"));
-        fabricante.setText(r.getString("NOMBRE"));
+        articulo.setText(r.getString("ARTICULO"));         
         peso.setText(r.getString("PESO"));
         categoria.setText(r.getString("CATEGORIA"));
         preciov.setText(r.getString("PRECIO_VENTA"));
         precioc.setText(r.getString("PRECIO_COSTE"));
         existencias.setText(r.getString("EXISTENCIAS"));
+
+        String query2 = "select * FROM fabricantes";
+        ResultSet r2;
+        Statement s2 = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+        r2 = s2.executeQuery(query2);
+        DefaultComboBoxModel value1 = new DefaultComboBoxModel();
+
+        while (r2.next()) {
+            value1.addElement(r2.getString("NOMBRE"));
+        }
+        Cfabricante.setModel(value1);
+        Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
     }
 
     /**
@@ -55,7 +68,6 @@ public class Articulos extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         articulo = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        fabricante = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
         peso = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
@@ -76,6 +88,7 @@ public class Articulos extends javax.swing.JFrame {
         cancelar = new javax.swing.JButton();
         volver = new javax.swing.JButton();
         borrar = new javax.swing.JButton();
+        Cfabricante = new javax.swing.JComboBox<>();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -95,18 +108,9 @@ public class Articulos extends javax.swing.JFrame {
         jLabel3.setText("Artículo");
         jLabel3.setFocusable(false);
 
-        articulo.setNextFocusableComponent(fabricante);
-
         jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel4.setText("Fabricante");
         jLabel4.setFocusable(false);
-
-        fabricante.setNextFocusableComponent(peso);
-        fabricante.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                fabricanteActionPerformed(evt);
-            }
-        });
 
         jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
         jLabel5.setText("Peso");
@@ -218,6 +222,8 @@ public class Articulos extends javax.swing.JFrame {
             }
         });
 
+        Cfabricante.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -262,16 +268,16 @@ public class Articulos extends javax.swing.JFrame {
                                             .addComponent(jLabel8)))))
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(196, 196, 196)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(articulo, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(codigo, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(peso, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(categoria, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(preciov, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(precioc, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(existencias, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel1))))
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(articulo, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(codigo, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(categoria, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(preciov, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(precioc, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(existencias, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel1)
+                                    .addComponent(peso, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(Cfabricante, javax.swing.GroupLayout.Alignment.LEADING, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(29, 29, 29)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(cancelar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -294,8 +300,8 @@ public class Articulos extends javax.swing.JFrame {
                 .addGap(14, 14, 14)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(fabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(cancelar))
+                    .addComponent(cancelar)
+                    .addComponent(Cfabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5)
@@ -339,7 +345,7 @@ public class Articulos extends javax.swing.JFrame {
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
+            Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -355,7 +361,7 @@ public class Articulos extends javax.swing.JFrame {
             r.last();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
+            Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -368,16 +374,16 @@ public class Articulos extends javax.swing.JFrame {
 
     private void anteriorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_anteriorActionPerformed
         try {
-            if(r.previous()){
-            codigo.setText(r.getString("COD_ARTICULO"));
-            articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
-            peso.setText(r.getString("PESO"));
-            categoria.setText(r.getString("CATEGORIA"));
-            preciov.setText(r.getString("PRECIO_VENTA"));
-            precioc.setText(r.getString("PRECIO_COSTE"));
-            existencias.setText(r.getString("EXISTENCIAS"));
-        }
+            if (r.previous()) {
+                codigo.setText(r.getString("COD_ARTICULO"));
+                articulo.setText(r.getString("ARTICULO"));
+               Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
+                peso.setText(r.getString("PESO"));
+                categoria.setText(r.getString("CATEGORIA"));
+                preciov.setText(r.getString("PRECIO_VENTA"));
+                precioc.setText(r.getString("PRECIO_COSTE"));
+                existencias.setText(r.getString("EXISTENCIAS"));
+            }
         } catch (SQLException ex) {
             Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -385,16 +391,17 @@ public class Articulos extends javax.swing.JFrame {
 
     private void siguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_siguienteActionPerformed
         try {
-            if(r.next()){
-            codigo.setText(r.getString("COD_ARTICULO"));
-            articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
-            peso.setText(r.getString("PESO"));
-            categoria.setText(r.getString("CATEGORIA"));
-            preciov.setText(r.getString("PRECIO_VENTA"));
-            precioc.setText(r.getString("PRECIO_COSTE"));
-            existencias.setText(r.getString("EXISTENCIAS"));
-        }   } catch (SQLException ex) {
+            if (r.next()) {
+                codigo.setText(r.getString("COD_ARTICULO"));
+                articulo.setText(r.getString("ARTICULO"));
+                Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
+                peso.setText(r.getString("PESO"));
+                categoria.setText(r.getString("CATEGORIA"));
+                preciov.setText(r.getString("PRECIO_VENTA"));
+                precioc.setText(r.getString("PRECIO_COSTE"));
+                existencias.setText(r.getString("EXISTENCIAS"));
+            }
+        } catch (SQLException ex) {
             Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_siguienteActionPerformed
@@ -402,17 +409,18 @@ public class Articulos extends javax.swing.JFrame {
     private void nuevoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_nuevoActionPerformed
         codigo.setText(null);
         articulo.setText(null);
-        fabricante.setText(null);
+        Cfabricante.setSelectedItem(null);
+        //fabricante.setText(null);
         peso.setText(null);
         categoria.setText(null);
         preciov.setText(null);
         precioc.setText(null);
         existencias.setText(null);
-        
+
         codigo.setEditable(true);
         aceptar.setVisible(true);
         cancelar.setVisible(true);
-        
+
         primero.setEnabled(false);
         ultimo.setEnabled(false);
         siguiente.setEnabled(false);
@@ -426,7 +434,7 @@ public class Articulos extends javax.swing.JFrame {
         try {
             aceptar.setVisible(false);
             cancelar.setVisible(false);
-            
+
             codigo.setEditable(false);
             primero.setEnabled(true);
             ultimo.setEnabled(true);
@@ -435,11 +443,12 @@ public class Articulos extends javax.swing.JFrame {
             modificar.setEnabled(true);
             volver.setEnabled(true);
             borrar.setEnabled(true);
-            
+
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
+            //fabricante.setText(r.getString("NOMBRE"));
+            Cfabricante.setSelectedItem(getNombreFabricante(r.getInt("FABRICANTE")));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -452,22 +461,27 @@ public class Articulos extends javax.swing.JFrame {
 
     private void modificarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_modificarActionPerformed
         try {
-            String vCodigo, vArticulo, vFabricante, vPeso, vCategoria, vPreciov, vPrecioc, vExistencias;
+            String vCodigo, vFabricante, vArticulo, vPeso, vCategoria, vPreciov, vPrecioc, vExistencias;
+            
             vCodigo = codigo.getText();
             vArticulo = articulo.getText();
-            vFabricante = fabricante.getText();
+            vFabricante = Cfabricante.getSelectedItem(getCodigoFabricante(r.getString("NOMBRE")));
+            //Obtener el valor del combo
+            //Llamar metodo obtener codigo con el valor del combo
+            ///Este codigo lo actualizo en la bbdd
+            
+            //vFabricante = //fabricante.getText();
+            
+                    
             vPeso = peso.getText();
             vCategoria = categoria.getText();
             vPreciov = preciov.getText();
             vPrecioc = precioc.getText();
             vExistencias = existencias.getText();
-            
-            String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
-            String user = "root";
-            String pass = "";
-            Connection connection = DriverManager.getConnection(url, user,pass);
+
+           
             Statement s = connection.createStatement();
-            String query = "update articulos set COD_ARTICULO='" + vCodigo + "', ARTICULO='" + vArticulo + "', FABRICANTE='" + vFabricante + "', PESO='" + vPeso + "', CATEGORIA='" + vCategoria + "', PRECIO_VENTA='" + vPreciov + "', PRECIO_COSTE='" + vPrecioc + "', EXISTENCIAS='" + vExistencias + "' WHERE COD_ARTICULO='" + vCodigo +"'";
+            //String query = "update articulos set COD_ARTICULO='" + vCodigo + "', ARTICULO='" + vArticulo + "', FABRICANTE='" + vFabricante + "', PESO='" + vPeso + "', CATEGORIA='" + vCategoria + "', PRECIO_VENTA='" + vPreciov + "', PRECIO_COSTE='" + vPrecioc + "', EXISTENCIAS='" + vExistencias + "' WHERE COD_ARTICULO='" + vCodigo + "'";
             int resultado = s.executeUpdate(query);
             r.refreshRow();
         } catch (SQLException ex) {
@@ -480,7 +494,7 @@ public class Articulos extends javax.swing.JFrame {
             String vCodigo, vArticulo, vFabricante, vPeso, vCategoria, vPreciov, vPrecioc, vExistencias;
             vCodigo = codigo.getText();
             vArticulo = articulo.getText();
-            vFabricante = fabricante.getText();
+            vFabricante = //fabricante.getText();
             vPeso = peso.getText();
             vCategoria = categoria.getText();
             vPreciov = preciov.getText();
@@ -489,11 +503,11 @@ public class Articulos extends javax.swing.JFrame {
             String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
             String user = "root";
             String pass = "";
-            Connection connection = DriverManager.getConnection(url, user,pass);
+            Connection connection = DriverManager.getConnection(url, user, pass);
             Statement s = connection.createStatement();
             String query = "insert into articulos values ('" + vCodigo + "','" + vArticulo + "','" + vFabricante + "','" + vPeso + "','" + vCategoria + "','" + vPreciov + "','" + vPrecioc + "','" + vExistencias + "')";
             int resultado = s.executeUpdate(query);
-            
+
             aceptar.setVisible(false);
             cancelar.setVisible(false);
             codigo.setEditable(false);
@@ -509,7 +523,7 @@ public class Articulos extends javax.swing.JFrame {
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
+            //fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -527,21 +541,21 @@ public class Articulos extends javax.swing.JFrame {
     private void borrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_borrarActionPerformed
         try {
             String vCodigo;
-            vCodigo=codigo.getText();
-            
+            vCodigo = codigo.getText();
+
             String url = "jdbc:mysql://localhost:3306/base_datos_ej1";
             String user = "root";
             String pass = "";
-            Connection connection = DriverManager.getConnection(url, user,pass);
+            Connection connection = DriverManager.getConnection(url, user, pass);
             Statement s = connection.createStatement();
-            String query = "DELETE FROM articulos WHERE COD_ARTICULO='"+ vCodigo + "'";
+            String query = "DELETE FROM articulos WHERE COD_ARTICULO='" + vCodigo + "'";
             int resultado = s.executeUpdate(query);
             String query2 = "select A.* F.Nombre from articulos A, fabricantes F where A.Fabricante=F.Cod_Fabricante";
             r = s.executeQuery(query2);
             r.first();
             codigo.setText(r.getString("COD_ARTICULO"));
             articulo.setText(r.getString("ARTICULO"));
-            fabricante.setText(r.getString("NOMBRE"));
+            //fabricante.setText(r.getString("NOMBRE"));
             peso.setText(r.getString("PESO"));
             categoria.setText(r.getString("CATEGORIA"));
             preciov.setText(r.getString("PRECIO_VENTA"));
@@ -552,9 +566,39 @@ public class Articulos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_borrarActionPerformed
 
-    private void fabricanteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fabricanteActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_fabricanteActionPerformed
+    public static String getNombreFabricante(int codigo) {
+
+        String name = "";
+        try {
+            ResultSet r3;
+
+            Statement s3 = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String queryNombre = "select nombre from fabricantes WHERE cod_fabricante=" + codigo;
+            r3 = s3.executeQuery(queryNombre);
+            r3.first();
+            name = r3.getString("NOMBRE");            
+        } catch (SQLException ex) {
+            Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return name;
+    }
+
+    public static int getCodigoFabricante(String nombre) {
+        int vCodigo = 0;
+        
+        try {
+
+            ResultSet r3;
+            Statement s3 = connection.createStatement(ResultSet.TYPE_SCROLL_SENSITIVE, ResultSet.CONCUR_UPDATABLE);
+            String queryCodigo = "select cod_fabricante from articulos WHERE nombre=" + nombre;
+            r3 = s3.executeQuery(queryCodigo);
+            r3.first();
+            vCodigo = r3.getInt("COD_FABRICANTE");
+        } catch (SQLException ex) {
+            Logger.getLogger(Articulos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return vCodigo;
+    }
 
     /**
      * @param args the command line arguments
@@ -596,6 +640,7 @@ public class Articulos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JComboBox<String> Cfabricante;
     private javax.swing.JButton aceptar;
     private javax.swing.JButton anterior;
     private javax.swing.JTextField articulo;
@@ -604,7 +649,6 @@ public class Articulos extends javax.swing.JFrame {
     private javax.swing.JTextField categoria;
     private javax.swing.JTextField codigo;
     private javax.swing.JTextField existencias;
-    private javax.swing.JTextField fabricante;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
