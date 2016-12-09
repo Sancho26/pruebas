@@ -19,8 +19,6 @@ public class Fabricantes extends javax.swing.JFrame {
     static public ResultSet r;
     
     public Fabricantes() throws SQLException {
-        //MODIFICACIONES
-        //MOD MOD
         initComponents();
         aceptar.setVisible(false);
         cancelar.setVisible(false);
