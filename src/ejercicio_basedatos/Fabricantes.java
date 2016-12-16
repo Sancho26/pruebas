@@ -46,7 +46,8 @@ public class Fabricantes extends javax.swing.JFrame {
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
-
+        //ESTO LO HE HECHO DESDE GITHUB
+        
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         codigo = new javax.swing.JTextField();
