@@ -21,6 +21,7 @@ public class Fabricantes extends javax.swing.JFrame {
     public Fabricantes() throws SQLException {
         //MODIFICACIONES
         //LOL
+        //ESTO ES LA RAMA DE PRUEBAS LOL OL LOL
         initComponents();
         aceptar.setVisible(false);
         cancelar.setVisible(false);
